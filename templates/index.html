@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flower image recognition demo!</title>
+
+    <style>
+        h1 {
+            text-align: center;
+        }
+
+        div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        input {
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flower image recognition demo!</h1>
+
+    <div>
+        <input type="file">
+
+        <pre></pre>
+    </div>
+
+    <script>
+        const input = document.querySelector('input');
+        const result = document.querySelector('pre');
+
+        input.onchange = function() {
+            const file = input.files[0];
+            const reader = new FileReader();
+
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({image: reader.result})
+                })
+                .then(res => res.json())
+                .then(res => {
+                    result.innerText = JSON.stringify(res["predictions"], null, 4)
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            };
+            reader.onerror = function (error) {
+                console.log(error);
+            };
+        }
+    </script>
+</body>
+</html>
