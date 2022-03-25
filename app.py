@@ -7,7 +7,7 @@ import re
 import base64
 
 from PIL import Image
-from flask import Flask, request
+from flask import Flask, request, render_template
 
 from tf_model_helper import TFModel
 
@@ -16,6 +16,11 @@ app = Flask(__name__)
 # Path to signature.json and model file
 ASSETS_PATH = os.path.join(".", "./model")
 TF_MODEL = TFModel(ASSETS_PATH)
+
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 
 @app.post('/predict')
